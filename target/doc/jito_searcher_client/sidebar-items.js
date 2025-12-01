@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["SearcherClientError"],"fn":["grpc_connect"],"mod":["client_interceptor","cluster_data_impl","convert","utils"],"struct":["SearcherClient"],"trait":["ClusterData"],"type":["BundleId","SearcherClientResult"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["memo_required"],"mod":["instruction"],"struct":["MemoTransfer"]};

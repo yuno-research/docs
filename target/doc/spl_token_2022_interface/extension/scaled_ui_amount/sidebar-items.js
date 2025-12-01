@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":["instruction"],"struct":["PodF64","ScaledUiAmountConfig"],"type":["UnixTimestamp"]};

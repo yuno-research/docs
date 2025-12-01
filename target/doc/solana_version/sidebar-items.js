@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["ClientId"],"macro":["semver","version"],"struct":["LegacyVersion1","LegacyVersion2","Version"]};

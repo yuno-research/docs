@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["G"],"static":["H"],"struct":["Pedersen","PedersenCommitment","PedersenOpening"]};

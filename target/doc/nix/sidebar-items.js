@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"macro":["getsockopt_impl","setsockopt_impl","sockopt_impl"],"mod":["errno","fcntl","ifaddrs","net","poll","spawn","sys","unistd"],"trait":["NixPath"],"type":["Error","Result"]};

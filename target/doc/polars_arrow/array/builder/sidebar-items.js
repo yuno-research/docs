@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["ShareStrategy"],"fn":["make_builder"],"trait":["ArrayBuilder","StaticArrayBuilder"]};

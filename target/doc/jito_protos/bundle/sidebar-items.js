@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["DroppedReason"],"mod":["bundle_result","rejected"],"struct":["Accepted","Bundle","BundleResult","BundleUuid","Dropped","DroppedBundle","Finalized","InternalError","Processed","Rejected","SimulationFailure","StateAuctionBidRejected","WinningBatchBidRejected"]};

@@ -1,0 +1,1 @@
+searchState.loadedDescShard("solana_measure", 0, "Measures how long it takes to execute an expression, and …\nMeasure this expression\nReturns the argument unchanged.\nCalls <code>U::from(self)</code>.")

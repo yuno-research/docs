@@ -1,0 +1,1 @@
+searchState.loadedDescShard("borsh_derive", 0, "moved to docs of <strong>Derive Macro</strong> <code>BorshDeserialize</code> in <code>borsh</code> …\nmoved to docs of <strong>Derive Macro</strong> <code>BorshSchema</code> in <code>borsh</code> crate\nmoved to docs of <strong>Derive Macro</strong> <code>BorshSerialize</code> in <code>borsh</code> crate")

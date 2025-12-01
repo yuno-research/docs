@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["cov","kurtosis","pearson_corr","skew","var"],"struct":["CovState","KurtosisState","PearsonState","SkewState","VarState"]};

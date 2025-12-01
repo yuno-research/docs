@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["is_simple_vote_transaction","is_simple_vote_transaction_impl"]};

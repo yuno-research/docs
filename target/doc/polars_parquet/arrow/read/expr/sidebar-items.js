@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["ParquetScalar","SpecializedParquetColumnExpr"],"trait":["ParquetColumnExpr"],"type":["ParquetColumnExprRef"]};

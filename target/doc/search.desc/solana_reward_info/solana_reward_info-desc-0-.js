@@ -1,0 +1,1 @@
+searchState.loadedDescShard("solana_reward_info", 0, "Vote account commission when the reward was credited, only …\nReturns the argument unchanged.\nReturns the argument unchanged.\nCalls <code>U::from(self)</code>.\nCalls <code>U::from(self)</code>.\nReward amount\nAccount balance in lamports after <code>lamports</code> was applied")

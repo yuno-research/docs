@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["concatenate","concatenate_unchecked","concatenate_validities"]};

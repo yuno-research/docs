@@ -1,0 +1,48 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="`::cfg_eval`"><title>cfg_eval - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../static.files/rustdoc-916cea96.css"><meta name="rustdoc-vars" data-root-path="../" data-static-root-path="../static.files/" data-current-crate="cfg_eval" data-themes="" data-resource-suffix="" data-rustdoc-version="1.87.0 (17067e9ac 2025-05-09)" data-channel="1.87.0" data-search-js="search-e7298875.js" data-settings-js="settings-d72f25bb.js" ><script src="../static.files/storage-82c7156e.js"></script><script defer src="../crates.js"></script><script defer src="../static.files/main-fb8c74a8.js"></script><noscript><link rel="stylesheet" href="../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../static.files/favicon-044be391.svg"></head><body class="rustdoc mod crate"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../cfg_eval/index.html">cfg_<wbr>eval</a><span class="version">0.1.2</span></h2></div><div class="sidebar-elems"><ul class="block"><li><a id="all-types" href="all.html">All Items</a></li></ul><section id="rustdoc-toc"><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#cfg_eval" title="`::cfg_eval`"><code>::cfg_eval</code></a><ul><li><a href="#example" title="Example">Example</a></li></ul></li></ul><h3><a href="#attributes">Crate Items</a></h3><ul class="block"><li><a href="#attributes" title="Attribute Macros">Attribute Macros</a></li></ul></section><div id="rustdoc-modnav"></div></div></nav><div class="sidebar-resizer"></div><main><div class="width-limiter"><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1>Crate <span>cfg_eval</span><button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../src/cfg_eval/lib.rs.html#1-404">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><h2 id="cfg_eval"><a class="doc-anchor" href="#cfg_eval">§</a><code>::cfg_eval</code></h2>
+<p><a href="https://doc.rust-lang.org/1.70.0/core/prelude/v1/attr.cfg_eval.html"><code>#[cfg_eval]</code></a> in stable Rust.</p>
+<p><a href="https://github.com/danielhenrymantilla/cfg_eval.rs"><img src="https://img.shields.io/badge/repository-GitHub-brightgreen.svg" alt="Repository" /></a>
+<a href="https://crates.io/crates/cfg_eval"><img src="https://img.shields.io/crates/v/cfg_eval.svg" alt="Latest version" /></a>
+<a href="https://docs.rs/cfg_eval"><img src="https://docs.rs/cfg_eval/badge.svg" alt="Documentation" /></a>
+<a href="https://gist.github.com/danielhenrymantilla/9b59de4db8e5f2467ed008b3c450527b"><img src="https://img.shields.io/badge/MSRV-stable--9-white" alt="MSRV" /></a>
+<a href="https://github.com/rust-secure-code/safety-dance/"><img src="https://img.shields.io/badge/unsafe-forbidden-success.svg" alt="unsafe forbidden" /></a>
+<a href="https://github.com/danielhenrymantilla/cfg_eval.rs/blob/master/LICENSE-ZLIB"><img src="https://img.shields.io/crates/l/cfg_eval.svg" alt="License" /></a>
+<a href="https://github.com/danielhenrymantilla/cfg_eval.rs/actions"><img src="https://github.com/danielhenrymantilla/cfg_eval.rs/workflows/CI/badge.svg" alt="CI" /></a></p>
+<!-- Templated by `cargo-generate` using https://github.com/danielhenrymantilla/proc-macro-template -->
+<h3 id="example"><a class="doc-anchor" href="#example">§</a>Example</h3>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>::macro_rules_attribute::apply;
+
+<span class="attr">#[macro_use]
+</span><span class="kw">extern crate </span>cfg_eval;
+
+<span class="kw">fn </span>main()
+{
+    <span class="kw">let </span>output_without_cfg_eval = {
+        <span class="attr">#[apply(<span class="macro">stringify!</span>)]
+        </span><span class="kw">enum </span>Foo {
+            Bar,
+
+            <span class="attr">#[cfg(FALSE)]
+            </span>NonExisting,
+        }
+    };
+    <span class="comment">// This is usually not great.
+    </span><span class="macro">assert!</span>(output_without_cfg_eval.contains(<span class="string">"NonExisting"</span>));
+
+    <span class="kw">let </span>output_with_cfg_eval = {
+        <span class="attr">#[cfg_eval]
+        #[apply(<span class="macro">stringify!</span>)]
+        </span><span class="kw">enum </span>Foo {
+            Bar,
+
+            <span class="attr">#[cfg(FALSE)]
+            </span>NonExisting,
+        }
+    };
+    <span class="macro">assert_eq!</span>(output_with_cfg_eval, <span class="macro">stringify!</span> {
+        <span class="kw">enum </span>Foo {
+            Bar,
+        }
+    });
+}</code></pre></div>
+</div></details><h2 id="attributes" class="section-header">Attribute Macros<a href="#attributes" class="anchor">§</a></h2><dl class="item-table"><dt><a class="attr" href="attr.cfg_eval.html" title="attr cfg_eval::cfg_eval">cfg_<wbr>eval</a></dt><dd><a href="https://doc.rust-lang.org/1.70.0/core/prelude/v1/attr.cfg_eval.html"><code>#[::core::prelude::v1::cfg_eval]</code></a>
+in stable Rust.</dd></dl></section></div></main></body></html>

@@ -1,0 +1,1 @@
+searchState.loadedDescShard("solana_epoch_rewards_hasher", 0, "Returns the argument unchanged.\nReturn partition index (0..partitions) by hashing <code>address</code> …\nCalls <code>U::from(self)</code>.\nUse SipHasher13 keyed on the <code>seed</code> for calculating epoch …")

@@ -1,0 +1,82 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/timrolsh/Git/Yuno/solana_central/src/types/pool.rs`."><title>pool.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-916cea96.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="solana_central" data-themes="" data-resource-suffix="" data-rustdoc-version="1.87.0 (17067e9ac 2025-05-09)" data-channel="1.87.0" data-search-js="search-e7298875.js" data-settings-js="settings-d72f25bb.js" ><script src="../../../static.files/storage-82c7156e.js"></script><script defer src="../../../static.files/src-script-63605ae7.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-fb8c74a8.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">solana_central/types/</div>pool.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-2"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use </span><span class="kw">crate</span>::CentralContext;
+<a href=#2 id=2 data-nosnippet>2</a><span class="kw">use </span><span class="kw">crate</span>::types::pools::Pools;
+<a href=#3 id=3 data-nosnippet>3</a><span class="kw">use </span><span class="kw">crate</span>::types::swap_direction::SwapDirection;
+<a href=#4 id=4 data-nosnippet>4</a><span class="kw">use </span>solana_sdk::pubkey::Pubkey;
+<a href=#5 id=5 data-nosnippet>5</a><span class="kw">use </span>std::any::Any;
+<a href=#6 id=6 data-nosnippet>6</a><span class="kw">use </span>std::sync::Arc;
+<a href=#7 id=7 data-nosnippet>7</a>
+<a href=#8 id=8 data-nosnippet>8</a><span class="doccomment">/// Base pool information shared by all pool types. Contains the essential addresses and
+<a href=#9 id=9 data-nosnippet>9</a>/// identifiers that every pool implementation requires. Protocol-specific pool structs will embed
+<a href=#10 id=10 data-nosnippet>10</a>/// this as an `info` field.
+<a href=#11 id=11 data-nosnippet>11</a></span><span class="attr">#[derive(Debug)]
+<a href=#12 id=12 data-nosnippet>12</a></span><span class="kw">pub struct </span>Pool {
+<a href=#13 id=13 data-nosnippet>13</a>  <span class="kw">pub </span>pool_address: Pubkey,
+<a href=#14 id=14 data-nosnippet>14</a>  <span class="kw">pub </span>token_a_address: Pubkey,
+<a href=#15 id=15 data-nosnippet>15</a>  <span class="kw">pub </span>token_b_address: Pubkey,
+<a href=#16 id=16 data-nosnippet>16</a>  <span class="kw">pub </span>token_a_vault_address: Pubkey,
+<a href=#17 id=17 data-nosnippet>17</a>  <span class="kw">pub </span>token_b_vault_address: Pubkey,
+<a href=#18 id=18 data-nosnippet>18</a>  <span class="kw">pub </span>pool_type: Pools,
+<a href=#19 id=19 data-nosnippet>19</a>}
+<a href=#20 id=20 data-nosnippet>20</a>
+<a href=#21 id=21 data-nosnippet>21</a><span class="doccomment">/// Trait for all pool types, providing a unified interface for DEX pools. All pools implement this
+<a href=#22 id=22 data-nosnippet>22</a>/// trait to provide common functionality like price queries, fee calculations, and reserve
+<a href=#23 id=23 data-nosnippet>23</a>/// lookups.
+<a href=#24 id=24 data-nosnippet>24</a></span><span class="kw">pub trait </span>PoolTrait: Any + Send + Sync {
+<a href=#25 id=25 data-nosnippet>25</a>  <span class="doccomment">/// Get the pool's on-chain address
+<a href=#26 id=26 data-nosnippet>26</a>  </span><span class="kw">fn </span>pool_address(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Pubkey;
+<a href=#27 id=27 data-nosnippet>27</a>  <span class="doccomment">/// Get the address of token A
+<a href=#28 id=28 data-nosnippet>28</a>  </span><span class="kw">fn </span>token_a_address(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Pubkey;
+<a href=#29 id=29 data-nosnippet>29</a>  <span class="doccomment">/// Get the address of token B
+<a href=#30 id=30 data-nosnippet>30</a>  </span><span class="kw">fn </span>token_b_address(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Pubkey;
+<a href=#31 id=31 data-nosnippet>31</a>  <span class="doccomment">/// Get the vault address for token A
+<a href=#32 id=32 data-nosnippet>32</a>  </span><span class="kw">fn </span>token_a_vault_address(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Pubkey;
+<a href=#33 id=33 data-nosnippet>33</a>  <span class="doccomment">/// Get the vault address for token B
+<a href=#34 id=34 data-nosnippet>34</a>  </span><span class="kw">fn </span>token_b_vault_address(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Pubkey;
+<a href=#35 id=35 data-nosnippet>35</a>  <span class="doccomment">/// Get the pool type enum variant
+<a href=#36 id=36 data-nosnippet>36</a>  </span><span class="kw">fn </span>pool_type(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Pools;
+<a href=#37 id=37 data-nosnippet>37</a>  
+<a href=#38 id=38 data-nosnippet>38</a>  <span class="doccomment">/// Get the total swap fee in lamports (10^9 lamports = 1 SOL)
+<a href=#39 id=39 data-nosnippet>39</a>  </span><span class="kw">fn </span>total_swap_fee_lp(<span class="kw-2">&amp;</span><span class="self">self</span>, central_context: <span class="kw-2">&amp;</span>Arc&lt;CentralContext&gt;) -&gt; u64;
+<a href=#40 id=40 data-nosnippet>40</a>
+<a href=#41 id=41 data-nosnippet>41</a>  <span class="doccomment">/// Get a reference to the pool as `Any` for type downcasting
+<a href=#42 id=42 data-nosnippet>42</a>  </span><span class="kw">fn </span>as_any(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="kw">dyn </span>Any;
+<a href=#43 id=43 data-nosnippet>43</a>  <span class="doccomment">/// Get a mutable reference to the pool as `Any` for type downcasting
+<a href=#44 id=44 data-nosnippet>44</a>  </span><span class="kw">fn </span>as_any_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span><span class="kw">dyn </span>Any;
+<a href=#45 id=45 data-nosnippet>45</a>
+<a href=#46 id=46 data-nosnippet>46</a>  <span class="doccomment">/// Calculate the price of token A in terms of token B. Fx ticker equivalent: B/A. Returns how
+<a href=#47 id=47 data-nosnippet>47</a>  /// many units of token A are needed to buy 1 unit of token B, in lamports. For AMMs, typically
+<a href=#48 id=48 data-nosnippet>48</a>  /// calculated as: (A reserves * LAMPORTS_PER_SOL) / B reserves
+<a href=#49 id=49 data-nosnippet>49</a>  </span><span class="kw">fn </span>price_a_over_b_lp(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u128;
+<a href=#50 id=50 data-nosnippet>50</a>
+<a href=#51 id=51 data-nosnippet>51</a>  <span class="doccomment">/// Calculate the price of token B in terms of token A. Fx ticker equivalent: A/B. Returns how
+<a href=#52 id=52 data-nosnippet>52</a>  /// many units of token A are needed to buy 1 unit of token B, in lamports. For AMMs, typically
+<a href=#53 id=53 data-nosnippet>53</a>  /// calculated as: (B reserves * LAMPORTS_PER_SOL) / A reserves. Inverse of `price_a_over_b_lp`.
+<a href=#54 id=54 data-nosnippet>54</a>  </span><span class="kw">fn </span>price_b_over_a_lp(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u128;
+<a href=#55 id=55 data-nosnippet>55</a>
+<a href=#56 id=56 data-nosnippet>56</a>  <span class="doccomment">/// Fetch and update pool state from JSON RPC and immediately overrides the in-memory pool state.
+<a href=#57 id=57 data-nosnippet>57</a>  /// Should not be used in production in favor of using gRPC streams.
+<a href=#58 id=58 data-nosnippet>58</a>  </span><span class="kw">fn </span>fetch_market_state_from_rpc(<span class="kw-2">&amp;mut </span><span class="self">self</span>, central_context: <span class="kw-2">&amp;</span>Arc&lt;CentralContext&gt;);
+<a href=#59 id=59 data-nosnippet>59</a>
+<a href=#60 id=60 data-nosnippet>60</a>  <span class="doccomment">/// Get the actual amount of token A in the pool, in token units. This is calculated dynamically
+<a href=#61 id=61 data-nosnippet>61</a>  /// because some protocols (like Meteora) derive real token balances from LP token balances
+<a href=#62 id=62 data-nosnippet>62</a>  /// rather than storing them directly in the pool account, and other protocols require excluding
+<a href=#63 id=63 data-nosnippet>63</a>  /// collected fees from raw reserves.
+<a href=#64 id=64 data-nosnippet>64</a>  </span><span class="kw">fn </span>token_a_amount_units(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u64;
+<a href=#65 id=65 data-nosnippet>65</a>  
+<a href=#66 id=66 data-nosnippet>66</a>  <span class="doccomment">/// Get the actual amount of token B in the pool, in token units. See `token_a_amount_units`
+<a href=#67 id=67 data-nosnippet>67</a>  /// for details on why this is calculated dynamically.
+<a href=#68 id=68 data-nosnippet>68</a>  </span><span class="kw">fn </span>token_b_amount_units(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u64;
+<a href=#69 id=69 data-nosnippet>69</a>
+<a href=#70 id=70 data-nosnippet>70</a>  <span class="doccomment">/// Get directional swap fees as fractions for a given swap direction
+<a href=#71 id=71 data-nosnippet>71</a>  ///
+<a href=#72 id=72 data-nosnippet>72</a>  /// Returns `(fee_a_fraction, fee_b_fraction)` where each value is between 0.0 and 1.0
+<a href=#73 id=73 data-nosnippet>73</a>  /// (e.g., 0.003 = 0.3%). The fees may differ based on swap direction for protocols
+<a href=#74 id=74 data-nosnippet>74</a>  /// with asymmetric fee structures.
+<a href=#75 id=75 data-nosnippet>75</a>  /// * `central_context` with updated current slot value - Needed for time-based fee calculations
+<a href=#76 id=76 data-nosnippet>76</a>  /// in Meteora DAMMv2 and DBC
+<a href=#77 id=77 data-nosnippet>77</a>  </span><span class="kw">fn </span>directional_fees(
+<a href=#78 id=78 data-nosnippet>78</a>    <span class="kw-2">&amp;</span><span class="self">self</span>,
+<a href=#79 id=79 data-nosnippet>79</a>    direction: SwapDirection,
+<a href=#80 id=80 data-nosnippet>80</a>    central_context: <span class="kw-2">&amp;</span>Arc&lt;CentralContext&gt;,
+<a href=#81 id=81 data-nosnippet>81</a>  ) -&gt; (f64, f64);
+<a href=#82 id=82 data-nosnippet>82</a>}</code></pre></div></section></main></body></html>

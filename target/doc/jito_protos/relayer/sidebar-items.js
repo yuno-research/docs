@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":["relayer_client","relayer_server","subscribe_packets_response"],"struct":["GetTpuConfigsRequest","GetTpuConfigsResponse","SubscribePacketsRequest","SubscribePacketsResponse"]};

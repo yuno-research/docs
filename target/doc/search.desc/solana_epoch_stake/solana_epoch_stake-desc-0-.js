@@ -1,0 +1,1 @@
+searchState.loadedDescShard("solana_epoch_stake", 0, "API for retrieving epoch stake information.\nGet the current epoch stake for a given vote address.\nGet the current epoch’s total stake.")

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["Chunks","ChunksExact","Iter","RChunks","RChunksExact","Vector","Windows"]};

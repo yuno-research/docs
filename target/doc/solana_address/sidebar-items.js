@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["ADDRESS_BYTES","MAX_SEEDS","MAX_SEED_LEN","PDA_MARKER"],"fn":["address_eq","bytes_are_curve_point"],"macro":["address","declare_deprecated_id","declare_id"],"mod":["error","syscalls"],"struct":["Address","AddressHasher","AddressHasherBuilder"]};

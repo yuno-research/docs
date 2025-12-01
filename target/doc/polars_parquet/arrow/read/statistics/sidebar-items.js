@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["ColumnPathSegment","Statistics"],"fn":["deserialize","deserialize_all"],"struct":["ArrowColumnStatistics","ArrowColumnStatisticsArrays","ColumnStatistics"]};

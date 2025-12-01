@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["QuantileMethod","RollingFnParams"],"mod":["moment","no_nulls","nulls","quantile_filter"],"struct":["RollingQuantileParams","RollingVarParams"],"type":["QuantileInterpolOptions"]};

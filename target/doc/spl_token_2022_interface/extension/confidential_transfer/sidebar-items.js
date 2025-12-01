@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["DEFAULT_MAXIMUM_PENDING_BALANCE_CREDIT_COUNTER","MAXIMUM_DEPOSIT_TRANSFER_AMOUNT","PENDING_BALANCE_LO_BIT_LENGTH"],"mod":["instruction"],"struct":["ConfidentialTransferAccount","ConfidentialTransferMint"],"type":["DecryptableBalance","EncryptedBalance"]};

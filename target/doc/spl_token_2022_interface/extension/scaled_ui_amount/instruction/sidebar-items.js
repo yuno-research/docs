@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["ScaledUiAmountMintInstruction"],"fn":["initialize","update_multiplier"],"struct":["InitializeInstructionData","UpdateMultiplierInstructionData"]};

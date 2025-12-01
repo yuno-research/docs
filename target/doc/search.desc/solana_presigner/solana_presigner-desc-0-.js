@@ -1,0 +1,1 @@
+searchState.loadedDescShard("solana_presigner", 0, "A <code>Signer</code> implementation that represents a <code>Signature</code> that …\nReturns the argument unchanged.\nReturns the argument unchanged.\nCalls <code>U::from(self)</code>.\nCalls <code>U::from(self)</code>.")

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["rolling_kurtosis","rolling_max","rolling_mean","rolling_min","rolling_quantile","rolling_skew","rolling_sum","rolling_var"],"struct":["MeanWindow","MomentWindow","QuantileWindow","SumWindow"],"trait":["RollingAggWindowNulls"],"type":["MaxWindow","MinWindow"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["UiAccountData","UiAccountEncoding"],"mod":["token"],"struct":["ParsedAccount","UiAccount","UiDataSliceConfig"]};

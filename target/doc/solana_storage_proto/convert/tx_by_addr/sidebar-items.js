@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["InstructionErrorType","TransactionErrorType"],"struct":["CustomError","InstructionError","Memo","TransactionByAddr","TransactionByAddrInfo","TransactionDetails","TransactionError","UnixTimestamp"]};

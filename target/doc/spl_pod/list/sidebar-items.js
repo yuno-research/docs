@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["ListView","ListViewMut","ListViewReadOnly"],"trait":["List"]};

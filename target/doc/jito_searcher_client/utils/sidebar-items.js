@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["derive_tip_accounts"]};

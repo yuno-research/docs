@@ -1,0 +1,40 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Generates the zero-knowledge proofs required for a confidential withdraw."><title>spl_token_confidential_transfer_proof_generation::withdraw - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-916cea96.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="spl_token_confidential_transfer_proof_generation" data-themes="" data-resource-suffix="" data-rustdoc-version="1.87.0 (17067e9ac 2025-05-09)" data-channel="1.87.0" data-search-js="search-e7298875.js" data-settings-js="settings-d72f25bb.js" ><script src="../../static.files/storage-82c7156e.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../static.files/main-fb8c74a8.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc mod"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../spl_token_confidential_transfer_proof_generation/index.html">spl_<wbr>token_<wbr>confidential_<wbr>transfer_<wbr>proof_<wbr>generation</a><span class="version">0.5.1</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module withdraw</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#protocol-flow-and-proof-components" title="Protocol Flow and Proof Components">Protocol Flow and Proof Components</a></li></ul><h3><a href="#structs">Module Items</a></h3><ul class="block"><li><a href="#structs" title="Structs">Structs</a></li><li><a href="#functions" title="Functions">Functions</a></li></ul></section><div id="rustdoc-modnav"><h2 class="in-crate"><a href="../index.html">In crate spl_<wbr>token_<wbr>confidential_<wbr>transfer_<wbr>proof_<wbr>generation</a></h2></div></div></nav><div class="sidebar-resizer"></div><main><div class="width-limiter"><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="../index.html">spl_token_confidential_transfer_proof_generation</a></div><h1>Module <span>withdraw</span><button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../src/spl_token_confidential_transfer_proof_generation/withdraw.rs.html#1-97">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Generates the zero-knowledge proofs required for a confidential withdraw.</p>
+<p>A confidential withdraw operation converts a user’s encrypted, confidential token balance back into a
+standard, publicly-visible SPL token balance. To ensure this operation is valid and that a user
+cannot create tokens out of thin air, it requires two distinct zero-knowledge proofs.</p>
+<h3 id="protocol-flow-and-proof-components"><a class="doc-anchor" href="#protocol-flow-and-proof-components">§</a>Protocol Flow and Proof Components</h3>
+<ol>
+<li>
+<p><strong>Calculate Remaining Balance</strong>: The client first calculates the remaining confidential balance
+by subtracting the desired <code>withdraw_amount</code> from their current known balance.</p>
+</li>
+<li>
+<p><strong>Homomorphic Calculation</strong>: The client homomorphically computes the new encrypted balance
+ciphertext. This is done by taking the current <code>available_balance</code> ciphertext and subtracting
+a newly-encoded ciphertext of the <code>withdraw_amount</code>.</p>
+</li>
+<li>
+<p><strong>Generate Proofs</strong>: The user generates two proofs to certify the validity of the operation:</p>
+<ul>
+<li>
+<p><strong>Ciphertext-Commitment Equality Proof (<code>CiphertextCommitmentEqualityProofData</code>)</strong>:
+This proof provides a cryptographic link that enables the solvency check. When the
+<code>remaining_balance_ciphertext</code> is computed homomorphically, the prover may not know the
+corresponding Pedersen opening (randomness) for the resulting ciphertext. Performing a
+range proof requires knowledge of this opening.</p>
+<p>To solve this, the prover creates a <em>new</em> Pedersen commitment for the remaining balance,
+for which it knows the opening. The equality proof then certifies that the
+homomorphically-derived ciphertext and this new commitment hide the exact same numerical
+value. This allows the range proof to be performed on the new commitment.</p>
+</li>
+<li>
+<p><strong>Range Proof (<code>BatchedRangeProofU64Data</code>)</strong>:
+This proof certifies the user’s <strong>solvency</strong>. By proving that the value inside the
+Pedersen commitment for the <em>remaining balance</em> is non-negative (i.e., it is in the range
+<code>[0, 2^64)</code>), it implicitly proves that the user’s original balance was greater than or
+equal to the <code>withdraw_amount</code>.</p>
+</li>
+</ul>
+</li>
+</ol>
+</div></details><h2 id="structs" class="section-header">Structs<a href="#structs" class="anchor">§</a></h2><dl class="item-table"><dt><a class="struct" href="struct.WithdrawProofData.html" title="struct spl_token_confidential_transfer_proof_generation::withdraw::WithdrawProofData">Withdraw<wbr>Proof<wbr>Data</a></dt><dd>Proof data required for a withdraw instruction</dd></dl><h2 id="functions" class="section-header">Functions<a href="#functions" class="anchor">§</a></h2><dl class="item-table"><dt><a class="fn" href="fn.withdraw_proof_data.html" title="fn spl_token_confidential_transfer_proof_generation::withdraw::withdraw_proof_data">withdraw_<wbr>proof_<wbr>data</a></dt></dl></section></div></main></body></html>

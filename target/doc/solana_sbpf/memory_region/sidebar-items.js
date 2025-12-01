@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["AccessType","MemoryMapping"],"fn":["default_access_violation_handler"],"struct":["AlignedMemoryMapping","CommonMemoryMapping","MemoryRegion","UnalignedMemoryMapping"],"type":["AccessViolationHandler"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["RewardType"],"struct":["BlockHeight","CompiledInstruction","ConfirmedBlock","ConfirmedTransaction","InnerInstruction","InnerInstructions","Message","MessageAddressTableLookup","MessageHeader","NumPartitions","ReturnData","Reward","Rewards","TokenBalance","Transaction","TransactionError","TransactionStatusMeta","UiTokenAmount","UnixTimestamp"]};

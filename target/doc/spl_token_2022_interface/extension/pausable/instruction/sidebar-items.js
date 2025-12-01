@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["PausableInstruction"],"fn":["initialize","pause","resume"],"struct":["InitializeInstructionData"]};

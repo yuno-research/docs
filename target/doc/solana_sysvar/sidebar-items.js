@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["get_sysvar"],"macro":["impl_sysvar_get"],"mod":["__private","clock","epoch_rewards","epoch_schedule","fees","last_restart_slot","program_stubs","recent_blockhashes","rent","rewards","slot_hashes","slot_history"],"trait":["Sysvar","SysvarSerialize"]};

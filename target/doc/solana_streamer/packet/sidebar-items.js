@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["NUM_PACKETS","PACKETS_PER_BATCH","PACKET_DATA_SIZE"],"enum":["PacketBatch","PacketRef","PacketRefMut"],"fn":["send_to"],"struct":["Meta","Packet","PinnedPacketBatch"],"type":["PacketBatchRecycler"]};

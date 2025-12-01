@@ -1,0 +1,1 @@
+searchState.loadedDescShard("cfg_eval", 0, "<code>::cfg_eval</code>\n<code>#[::core::prelude::v1::cfg_eval]</code> in stable Rust.")

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["extract_and_fmt_memos"],"trait":["ExtractMemos"]};

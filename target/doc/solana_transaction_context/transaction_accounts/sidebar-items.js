@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["AccountRef","AccountRefMut","TransactionAccountView","TransactionAccountViewMut","TransactionAccounts"],"type":["KeyedAccountSharedData"]};

@@ -1,0 +1,44 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Generates the zero-knowledge proofs required for a confidential mint."><title>spl_token_confidential_transfer_proof_generation::mint - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-916cea96.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="spl_token_confidential_transfer_proof_generation" data-themes="" data-resource-suffix="" data-rustdoc-version="1.87.0 (17067e9ac 2025-05-09)" data-channel="1.87.0" data-search-js="search-e7298875.js" data-settings-js="settings-d72f25bb.js" ><script src="../../static.files/storage-82c7156e.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../static.files/main-fb8c74a8.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc mod"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../spl_token_confidential_transfer_proof_generation/index.html">spl_<wbr>token_<wbr>confidential_<wbr>transfer_<wbr>proof_<wbr>generation</a><span class="version">0.5.1</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module mint</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#protocol-flow-and-proof-components" title="Protocol Flow and Proof Components">Protocol Flow and Proof Components</a></li></ul><h3><a href="#structs">Module Items</a></h3><ul class="block"><li><a href="#structs" title="Structs">Structs</a></li><li><a href="#functions" title="Functions">Functions</a></li></ul></section><div id="rustdoc-modnav"><h2 class="in-crate"><a href="../index.html">In crate spl_<wbr>token_<wbr>confidential_<wbr>transfer_<wbr>proof_<wbr>generation</a></h2></div></div></nav><div class="sidebar-resizer"></div><main><div class="width-limiter"><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="../index.html">spl_token_confidential_transfer_proof_generation</a></div><h1>Module <span>mint</span><button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../src/spl_token_confidential_transfer_proof_generation/mint.rs.html#1-224">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Generates the zero-knowledge proofs required for a confidential mint.</p>
+<p>A confidential mint operation increases the total supply of a token and deposits the newly
+created tokens into a user’s confidential account. This process requires three distinct
+zero-knowledge proofs:</p>
+<h3 id="protocol-flow-and-proof-components"><a class="doc-anchor" href="#protocol-flow-and-proof-components">§</a>Protocol Flow and Proof Components</h3>
+<ol>
+<li>
+<p><strong>Encrypt Mint Amount</strong>: The mint amount is encrypted in a grouped (twisted) ElGamal
+ciphertext. This single cryptographic operation prepares the mint amount to be simultaneously
+added to the destination account’s balance and the mint’s total supply. It also includes an
+encryption for an optional auditor.</p>
+</li>
+<li>
+<p><strong>Homomorphic Calculation</strong>: The client homomorphically computes the new encrypted total supply
+by adding the supply-encrypted component of the mint amount to the mint’s current
+<code>confidential_supply</code> ciphertext.</p>
+</li>
+<li>
+<p><strong>Generate Proofs</strong>: The user with mint authority generates three proofs:</p>
+<ul>
+<li>
+<p><strong>Batched Grouped Ciphertext Validity Proof</strong>:
+This proof certifies that the grouped ElGamal ciphertext for the <code>mint_amount</code> is well-formed
+and was correctly encrypted for the destination, supply, and auditor public keys.</p>
+</li>
+<li>
+<p><strong>Ciphertext-Commitment Equality Proof</strong>:
+This proof provides a cryptographic link that enables the total supply to be range-checked.
+When the <code>new_supply_ciphertext</code> is computed homomorphically, the prover no longer knows
+the associated Pedersen opening (randomness). To perform a range proof, the prover creates a
+<em>new</em> Pedersen commitment for the <code>new_supply</code> value (for which they know the opening) and
+uses this proof to certify that the ciphertext and the new commitment hide the same value.</p>
+</li>
+<li>
+<p><strong>Range Proof (<code>BatchedRangeProofU128</code>)</strong>:
+This proof ensures supply integrity. It certifies that the <code>mint_amount</code> is a valid
+48-bit number and, crucially, that the <code>new_supply</code> does not exceed the 64-bit limit.
+This makes it cryptographically impossible to mint tokens in a way that would cause the
+total supply to overflow.</p>
+</li>
+</ul>
+</li>
+</ol>
+</div></details><h2 id="structs" class="section-header">Structs<a href="#structs" class="anchor">§</a></h2><dl class="item-table"><dt><a class="struct" href="struct.MintProofData.html" title="struct spl_token_confidential_transfer_proof_generation::mint::MintProofData">Mint<wbr>Proof<wbr>Data</a></dt><dd>The proof data required for a confidential mint instruction</dd></dl><h2 id="functions" class="section-header">Functions<a href="#functions" class="anchor">§</a></h2><dl class="item-table"><dt><a class="fn" href="fn.mint_split_proof_data.html" title="fn spl_token_confidential_transfer_proof_generation::mint::mint_split_proof_data">mint_<wbr>split_<wbr>proof_<wbr>data</a></dt></dl></section></div></main></body></html>

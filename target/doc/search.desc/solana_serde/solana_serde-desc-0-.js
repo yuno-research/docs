@@ -1,0 +1,1 @@
+searchState.loadedDescShard("solana_serde", 0, "Serde helpers.\nThis helper function enables successful deserialization of …")

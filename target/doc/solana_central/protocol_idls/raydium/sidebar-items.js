@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["AmmV4Initialize2InstructionDataIdl","AmmV4PoolInfoIdl","CpmmInitializeInstructionDataIdl","CpmmPoolConfigIdl","CpmmPoolInfoIdl","LaunchpadPoolIdl","LaunchpadTradeEventIdl"]};

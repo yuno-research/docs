@@ -1,0 +1,38 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Solana Copy Trading Library"><title>copy_trading - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../static.files/rustdoc-916cea96.css"><meta name="rustdoc-vars" data-root-path="../" data-static-root-path="../static.files/" data-current-crate="copy_trading" data-themes="" data-resource-suffix="" data-rustdoc-version="1.87.0 (17067e9ac 2025-05-09)" data-channel="1.87.0" data-search-js="search-e7298875.js" data-settings-js="settings-d72f25bb.js" ><script src="../static.files/storage-82c7156e.js"></script><script defer src="../crates.js"></script><script defer src="../static.files/main-fb8c74a8.js"></script><noscript><link rel="stylesheet" href="../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../static.files/favicon-044be391.svg"></head><body class="rustdoc mod crate"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../copy_trading/index.html">copy_<wbr>trading</a><span class="version">0.0.0</span></h2></div><div class="sidebar-elems"><ul class="block"><li><a id="all-types" href="all.html">All Items</a></li></ul><section id="rustdoc-toc"><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#solana-copy-trading-library" title="Solana Copy Trading Library">Solana Copy Trading Library</a><ul><li><a href="#architecture" title="Architecture">Architecture</a></li><li><a href="#position-lifecycle" title="Position Lifecycle">Position Lifecycle</a></li></ul></li></ul><h3><a href="#structs">Crate Items</a></h3><ul class="block"><li><a href="#structs" title="Structs">Structs</a></li><li><a href="#enums" title="Enums">Enums</a></li><li><a href="#functions" title="Functions">Functions</a></li></ul></section><div id="rustdoc-modnav"></div></div></nav><div class="sidebar-resizer"></div><main><div class="width-limiter"><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1>Crate <span>copy_trading</span><button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../src/copy_trading/lib.rs.html#1-40">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><h2 id="solana-copy-trading-library"><a class="doc-anchor" href="#solana-copy-trading-library">§</a>Solana Copy Trading Library</h2>
+<p>Live execution system for copying trades from high-performing Solana wallets.</p>
+<p>This library provides the core components for a copy trading system that:</p>
+<ul>
+<li>Monitors swap transactions from tracked wallets</li>
+<li>Automatically opens positions when tracked wallets buy tokens</li>
+<li>Manages position lifecycle (opening, monitoring, closing)</li>
+<li>Implements stop-loss and hold-time strategies</li>
+<li>Executes trades via Jito bundles for fast settlement</li>
+</ul>
+<h3 id="architecture"><a class="doc-anchor" href="#architecture">§</a>Architecture</h3>
+<ul>
+<li><strong>PositionManager</strong>: Central coordinator that monitors swap transactions, market updates,
+and new pool creations. Manages multiple positions simultaneously.</li>
+<li><strong>Position</strong>: Represents a single copy trading position with state management and lifecycle handling.</li>
+<li><strong>PositionConfig</strong>: Configuration for each tracked wallet defining buy amounts, hold times, stop-loss settings.</li>
+</ul>
+<h3 id="position-lifecycle"><a class="doc-anchor" href="#position-lifecycle">§</a>Position Lifecycle</h3>
+<ol>
+<li><strong>Created</strong>: Position created when a tracked wallet buys a token</li>
+<li><strong>Opening</strong>: Buy transaction sent to blockchain via Jito</li>
+<li><strong>Open</strong>: Position actively monitored for stop-loss triggers and hold time expiration</li>
+<li><strong>Closing</strong>: Sell transaction sent to blockchain</li>
+<li><strong>Closed</strong>: Position finalized and removed from active tracking</li>
+</ol>
+<p>LOTS OF FUNCTIONS UNDER IMPLEMENTATIONS OF POSITION AND POSITION MANAGER ARE DOCUMENTED IN THE CODE.</p>
+</div></details><h2 id="structs" class="section-header">Structs<a href="#structs" class="anchor">§</a></h2><dl class="item-table"><dt><a class="struct" href="struct.Position.html" title="struct copy_trading::Position">Position</a></dt><dd>Represents a single copy trading position tracking a token purchase from a monitored wallet.
+Contains all state for a position including entry/exit prices, timestamps, stop-loss settings,
+and lifecycle status. Positions are managed through a state machine with transitions:
+Created -&gt; Opening -&gt; Open -&gt; Closing -&gt; Closed.</dd><dt><a class="struct" href="struct.PositionConfig.html" title="struct copy_trading::PositionConfig">Position<wbr>Config</a></dt><dd>Configuration for copy trading a specific wallet, defining position sizing and risk management.
+Each tracked wallet has its own configuration specifying buy amounts, hold times, stop-loss
+thresholds, and slippage tolerances.</dd><dt><a class="struct" href="struct.PositionManager.html" title="struct copy_trading::PositionManager">Position<wbr>Manager</a></dt><dd>Central coordinator for managing copy trading positions and monitoring wallet activity.
+Monitors swap transactions, market updates, and new pool creations, automatically opening and
+closing positions based on tracked wallet behavior. It maintains active positions and wallet
+configurations for copy trading.</dd></dl><h2 id="enums" class="section-header">Enums<a href="#enums" class="anchor">§</a></h2><dl class="item-table"><dt><a class="enum" href="enum.PositionCloseReason.html" title="enum copy_trading::PositionCloseReason">Position<wbr>Close<wbr>Reason</a></dt><dd>Reason why a position was closed.</dd><dt><a class="enum" href="enum.PositionStatus.html" title="enum copy_trading::PositionStatus">Position<wbr>Status</a></dt><dd>Represents the current lifecycle state of a position. Positions transition through these
+states: Created -&gt; Opening -&gt; Open -&gt; Closing -&gt; Closed.</dd></dl><h2 id="functions" class="section-header">Functions<a href="#functions" class="anchor">§</a></h2><dl class="item-table"><dt><a class="fn" href="fn.set_wallet_configs_from_pl_df.html" title="fn copy_trading::set_wallet_configs_from_pl_df">set_<wbr>wallet_<wbr>configs_<wbr>from_<wbr>pl_<wbr>df</a></dt><dd>Set wallet configurations from a Polars DataFrame. Clears existing wallet configs and loads new
+configurations from a DataFrame containing wallet addresses and their position configuration
+parameters.</dd></dl></section></div></main></body></html>

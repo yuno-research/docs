@@ -1,0 +1,1 @@
+searchState.loadedDescShard("solana_slot_hashes", 0, "A type to hold data for the <code>SlotHashes</code> sysvar.\nReturns the argument unchanged.\nCalls <code>U::from(self)</code>.\nThe const program ID.\nReturns <code>true</code> if given address is the ID.\nReturns the ID.")

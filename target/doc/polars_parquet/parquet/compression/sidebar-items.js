@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Compression","CompressionOptions","DecompressionContext"],"fn":["compress","decompress"],"struct":["BrotliLevel","GzipLevel","ZstdLevel"]};

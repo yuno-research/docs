@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["ID","SPL_TOKEN_ACCOUNT_MINT_OFFSET","SPL_TOKEN_ACCOUNT_OWNER_OFFSET"],"fn":["check_id","id"],"mod":["native_mint"],"struct":["Account","Mint"],"trait":["GenericTokenAccount","GenericTokenMint"]};

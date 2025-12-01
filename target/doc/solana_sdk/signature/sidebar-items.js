@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["SIGNATURE_BYTES"],"enum":["ParseSignatureError","PresignerError"],"struct":["NullSigner","Presigner","Signature"],"trait":["Signable"]};

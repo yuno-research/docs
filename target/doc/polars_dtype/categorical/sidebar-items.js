@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["CategoricalPhysical"],"fn":["ensure_same_categories","ensure_same_frozen_categories"],"struct":["CategoricalMapping","Categories","FrozenCategories"],"trait":["CatNative"],"type":["CatSize"]};

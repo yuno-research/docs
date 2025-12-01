@@ -1,0 +1,194 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="`#[::core::prelude::v1::cfg_eval]` in stable Rust."><title>cfg_eval in cfg_eval - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../static.files/rustdoc-916cea96.css"><meta name="rustdoc-vars" data-root-path="../" data-static-root-path="../static.files/" data-current-crate="cfg_eval" data-themes="" data-resource-suffix="" data-rustdoc-version="1.87.0 (17067e9ac 2025-05-09)" data-channel="1.87.0" data-search-js="search-e7298875.js" data-settings-js="settings-d72f25bb.js" ><script src="../static.files/storage-82c7156e.js"></script><script defer src="sidebar-items.js"></script><script defer src="../static.files/main-fb8c74a8.js"></script><noscript><link rel="stylesheet" href="../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../static.files/favicon-044be391.svg"></head><body class="rustdoc attr"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../cfg_eval/index.html">cfg_<wbr>eval</a><span class="version">0.1.2</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">cfg_<wbr>eval</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#example" title="Example">Example</a></li><li><a href="#how-it-works" title="How it works">How it works</a><ul><li><a href="#illustration" title="Illustration">Illustration</a></li></ul></li><li><a href="#reëxporting-this-macro-the-crate--somepath-optional-attribute-arg" title="Reëxporting this macro: the `crate = ::some::path` optional attribute arg">Reëxporting this macro: the <code>crate = ::some::path</code> optional attribute arg</a></li></ul></section><div id="rustdoc-modnav"><h2 class="in-crate"><a href="index.html">In crate cfg_<wbr>eval</a></h2></div></div></nav><div class="sidebar-resizer"></div><main><div class="width-limiter"><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="index.html">cfg_eval</a></div><h1>Attribute Macro <span class="attr">cfg_eval</span><button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../src/cfg_eval/lib.rs.html#285-306">Source</a> </span></div><pre class="rust item-decl"><code>#[cfg_eval]</code></pre><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p><a href="https://doc.rust-lang.org/1.70.0/core/prelude/v1/attr.cfg_eval.html"><code>#[::core::prelude::v1::cfg_eval]</code></a>
+in stable Rust.</p>
+<ul>
+<li>
+<p>Note: this macro, by default, only works on <code>struct</code>, <code>enum</code>, and
+<code>union</code> definitions (<em>i.e.</em>, on <code>#[derive]</code> input).</p>
+<p>Enable <code>features = ["items"]</code> to get support for arbitary items.</p>
+</li>
+</ul>
+<h3 id="example"><a class="doc-anchor" href="#example">§</a>Example</h3>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>::macro_rules_attribute::apply;
+
+<span class="attr">#[macro_use]
+</span><span class="kw">extern crate </span>cfg_eval;
+
+<span class="kw">fn </span>main()
+{
+    <span class="kw">let </span>output_without_cfg_eval = {
+        <span class="attr">#[apply(<span class="macro">stringify!</span>)]
+        </span><span class="kw">enum </span>Foo {
+            Bar,
+
+            <span class="attr">#[cfg(FALSE)]
+            </span>NonExisting,
+        }
+    };
+    <span class="comment">// This is usually not great.
+    </span><span class="macro">assert!</span>(output_without_cfg_eval.contains(<span class="string">"NonExisting"</span>));
+
+    <span class="kw">let </span>output_with_cfg_eval = {
+        <span class="attr">#[cfg_eval]
+        #[apply(<span class="macro">stringify!</span>)]
+        </span><span class="kw">enum </span>Foo {
+            Bar,
+
+            <span class="attr">#[cfg(FALSE)]
+            </span>NonExisting,
+        }
+    };
+    <span class="macro">assert_eq!</span>(output_with_cfg_eval, <span class="macro">stringify!</span> {
+        <span class="kw">enum </span>Foo {
+            Bar,
+        }
+    });
+}</code></pre></div>
+<h3 id="how-it-works"><a class="doc-anchor" href="#how-it-works">§</a>How it works</h3>
+<p>The way this is achieved is by taking advantage of <strong><code>#[derive(SomeDerive)]</code>
+having <code>#[cfg_eval]</code> semantics built in</strong>.</p>
+<ul>
+<li>
+<p>This means that if you have the luxury of hesitating between offering a
+derive macro, or an attribute macro, and need <code>#[cfg_eval]</code> semantics,
+you’d be better off using a derive than <code>#[cfg_eval]</code>!</p>
+</li>
+<li>
+<p>but the reality is that certain macros do want to modify their input,
+which rules out implementing it as a <code>#[derive]</code>.</p>
+</li>
+</ul>
+<h5 id="illustration"><a class="doc-anchor" href="#illustration">§</a>Illustration</h5>
+<p>With that knowledge, let’s see a step-by-step description of what the macro
+is doing.</p>
+<p>Consider, for instance, the following snippet:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[cfg_eval]
+#[other attrs...]
+#[cfg_attr(all(), for_instance)]
+</span><span class="kw">struct </span>Foo {
+    x: i32,
+    <span class="attr">#[cfg(any())]
+    </span>y: u8,
+}</code></pre></div>
+<ul>
+<li>Remember: <code>all()</code> is <code>cfg</code>-speak for <code>true</code>, and <code>any()</code>, for <code>false</code>.</li>
+</ul>
+<p><strong>What <code>#[cfg_eval]</code> does</strong>, then, on this snippet, is emitting the
+following:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[derive(RemoveExterminate)] </span><span class="comment">// 👈
+</span><span class="attr">#[exterminate]               </span><span class="comment">// 👈
+</span><span class="attr">#[other attrs...]
+#[cfg_attr(all(), for_instance)]
+</span><span class="kw">struct </span>Foo {
+    x: i32,
+    <span class="attr">#[cfg(any())]
+    </span>y: u8,
+}</code></pre></div>
+<p>With the added macros doing what their names indicate. If this is not clear
+enough, then feel free to read the following more detailed section:</p>
+<details class="custom"><summary><span class="summary-box"><span>Click to show</span></span></summary>
+<p>The <code>#[derive(RemoveExterminate)]</code> invocation leads to the following two
+snippets of code, as per the rules of <code>#[derive()]</code>s (<em>i.e.</em>, that the
+annotated item be emitted independently of what the macro emits):</p>
+<ul>
+<li>
+<p><em>independently of what <code>RemoveExterminate</code> does</em>, we have:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[exterminate] </span><span class="comment">// 👈
+</span><span class="attr">#[other attrs...]
+#[cfg_attr(all(), for_instance)]
+</span><span class="kw">struct </span>Foo {
+    x: i32,
+    <span class="attr">#[cfg(any())]
+    </span>y: u8,
+}</code></pre></div>
+<p>which then, thus, calls <code>#[exterminate]</code>.</p>
+<p>What <code>#[exterminate]</code> does, as hinted to the attentive reader by its
+otherwise totally unconspicuous name, is removing the annotated item:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="comment">/* nothing here! */</span></code></pre></div>
+</li>
+<li>
+<p><em>independently of the previous bullet</em>, <code>#[derive(RemoveExterminate)]</code>
+gets called, and we get:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="doccomment">//! Pseudo-code!
+
+</span><span class="macro">RemoveExterminate!</span> {
+    <span class="comment">// Note: thanks to `#[derive]` Magic™, the following tokens have
+    // been `#[cfg_eval]`-cleaned up! // ----+
+    </span><span class="attr">#[exterminate]                        </span><span class="comment">// |
+    </span><span class="attr">#[other attrs...]                     </span><span class="comment">// |
+    </span><span class="attr">#[for_instance] </span><span class="comment">// &lt;---------------------+
+    </span><span class="kw">struct </span>Foo {                          <span class="comment">// |
+        </span>x: i32,                           <span class="comment">// |
+    /* removed! &lt;----------------------------+
+        #[cfg(any())]
+        y: u8,
+     */
+    </span>}
+}</code></pre></div>
+<p>From here, this <code>RemoveExterminate</code> macro knows it has been invoked on an item
+doomed to die. It can thus, <strong>contrary to usual derives, reëmit the item
+it receives, modifying it at leisure</strong>.</p>
+<p>What it actually does, then, is reëmitting it almost as-is, but for that
+pesky <code>#[exterminate]</code> which is no longer useful to us.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[other attrs...]
+#[for_instance]
+</span><span class="kw">struct </span>Foo {
+    x: i32,
+}</code></pre></div>
+</li>
+</ul>
+<p>Which matches the expected <code>#[cfg_eval]</code> semantics on that original input:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[cfg_eval]
+#[other attrs...]
+#[cfg_attr(all(), for_instance)]
+</span><span class="kw">struct </span>Foo {
+    x: i32,
+    <span class="attr">#[cfg(any())]
+    </span>y: u8,
+}</code></pre></div>
+<hr />
+</details>
+<h3 id="reëxporting-this-macro-the-crate--somepath-optional-attribute-arg"><a class="doc-anchor" href="#reëxporting-this-macro-the-crate--somepath-optional-attribute-arg">§</a>Reëxporting this macro: the <code>crate = ::some::path</code> optional attribute arg</h3>
+<p>The following section is only meaningful to macro authors wishing to
+reëxport <code>#[<a href="%5Bmacro@cfg_eval%5D">cfg_eval</a>]</code> / reüse it from further downstream code.</p>
+<details class="custom"><summary><span class="summary-box"><span>Click to show</span></span></summary>
+<p>Given the above implementation, it should be no surprise that
+<code>#[<a href="%5Bmacro@cfg_eval%5D">cfg_eval</a>]</code> needs to refer to sibling helper macros in a
+path-robust manner.</p>
+<p>By default, it uses <code>::cfg_eval::*</code> paths, expecting there to be an external
+<code>::cfg_eval</code> crate with the items of this very crate (like proc-macros are
+known to do, given lack of <code>$crate</code> for non-function-like proc-macros), as
+<strong>a direct dependency</strong>.</p>
+<p>This means that if you have your own macro which, internally (or publicly),
+needs <code>#[<a href="%5Bmacro@cfg_eval%5D">cfg_eval</a>]</code>, then <strong>your downstream dependents, which
+are likely not to depend on <code>::cfg_eval</code> <em>directly</em></strong>, will be unable to
+make it work.</p>
+<p>The solution, to this, is an optional <code>crate = ::some::path</code> attribute arg:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[doc(hidden)] </span><span class="doccomment">/** Not part of the public API */
+</span><span class="kw">pub mod </span>__internal {
+    <span class="kw">pub use </span>::cfg_eval;
+}
+
+<span class="attr">#[macro_export]
+</span><span class="macro">macro_rules!</span> example {( <span class="macro-nonterminal">$input</span>:item ) =&gt; (
+    <span class="attr">#[<span class="macro-nonterminal">$crate::__internal::cfg_eval::cfg_eval</span>(
+        <span class="comment">// Add this:
+        </span><span class="kw">crate </span>= <span class="macro-nonterminal">$crate::__internal::cfg_eval </span><span class="comment">// 👈
+    </span>)]
+    </span><span class="macro-nonterminal">$input
+</span>)}
+
+<span class="comment">// so that downstream users can write:
+</span><span class="macro">::your_crate::example!</span> {
+    <span class="kw">struct </span>Foo { <span class="comment">/* … */ </span>}
+}</code></pre></div>
+<hr />
+</details>
+</div></details></section></div></main></body></html>

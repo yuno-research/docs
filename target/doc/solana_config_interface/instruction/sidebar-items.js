@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["create_account_with_max_config_space","store"]};

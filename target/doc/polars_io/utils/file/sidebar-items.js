@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Writeable"],"fn":["try_get_writeable"],"trait":["DynWriteable"]};

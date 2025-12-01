@@ -1,0 +1,49 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Generates the zero-knowledge proofs required for a confidential transfer."><title>spl_token_confidential_transfer_proof_generation::transfer - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-916cea96.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="spl_token_confidential_transfer_proof_generation" data-themes="" data-resource-suffix="" data-rustdoc-version="1.87.0 (17067e9ac 2025-05-09)" data-channel="1.87.0" data-search-js="search-e7298875.js" data-settings-js="settings-d72f25bb.js" ><script src="../../static.files/storage-82c7156e.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../static.files/main-fb8c74a8.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc mod"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../spl_token_confidential_transfer_proof_generation/index.html">spl_<wbr>token_<wbr>confidential_<wbr>transfer_<wbr>proof_<wbr>generation</a><span class="version">0.5.1</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module transfer</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#protocol-flow-and-proof-components" title="Protocol Flow and Proof Components">Protocol Flow and Proof Components</a></li></ul><h3><a href="#structs">Module Items</a></h3><ul class="block"><li><a href="#structs" title="Structs">Structs</a></li><li><a href="#functions" title="Functions">Functions</a></li></ul></section><div id="rustdoc-modnav"><h2 class="in-crate"><a href="../index.html">In crate spl_<wbr>token_<wbr>confidential_<wbr>transfer_<wbr>proof_<wbr>generation</a></h2></div></div></nav><div class="sidebar-resizer"></div><main><div class="width-limiter"><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="../index.html">spl_token_confidential_transfer_proof_generation</a></div><h1>Module <span>transfer</span><button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../src/spl_token_confidential_transfer_proof_generation/transfer.rs.html#1-245">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Generates the zero-knowledge proofs required for a confidential transfer.</p>
+<p>A confidential transfer requires a composition of three distinct zero-knowledge proofs to ensure
+correctness and security. This function orchestrates their generation.</p>
+<h3 id="protocol-flow-and-proof-components"><a class="doc-anchor" href="#protocol-flow-and-proof-components">§</a>Protocol Flow and Proof Components</h3>
+<ol>
+<li>
+<p><strong>Encrypt Transfer Amount</strong>: The transfer amount is split into low (16-bit) and high (32-bit)
+components. This is done to facilitate efficient decryption, which would otherwise require
+solving the discrete logarithm problem over the entire 64-bit range. Each component is
+encrypted as a grouped (twisted) ElGamal ciphertext with decryption handles for the source,
+destination, and an optional auditor.</p>
+</li>
+<li>
+<p><strong>Generate Proofs</strong>: The sender then generates the following proofs in a specific logical order:</p>
+<ul>
+<li>
+<p><strong>Ciphertext Validity Proof (<code>BatchedGroupedCiphertext3HandlesValidityProofData</code>)</strong>:
+This proof certifies that the grouped ElGamal ciphertexts for the transfer amount are
+well-formed (i.e., they are valid encryptions of the low and high bit components under
+the source, destination, and auditor keys).</p>
+</li>
+<li>
+<p><strong>Range Proof (<code>BatchedRangeProofU128Data</code>)</strong>:
+This proof ensures solvency and prevents the creation of tokens. It certifies that:</p>
+<ol>
+<li>The sender’s remaining balance is a non-negative 64-bit integer. This is ensures
+that <code>current_balance &gt;= transfer_amount</code>.</li>
+<li>The low and high components of the transfer amount are valid 16-bit and 32-bit
+integers, respectively.</li>
+</ol>
+<p>A range proof can only be generated from a Pedersen commitment for which the prover
+knows the opening. However, a sender does not necessarily know the Pedersen opening
+for the ciphertext associated with the sender’s remaining balance ciphertext. This
+this necessitates the ciphertext-commitment equality proof below.</p>
+</li>
+<li>
+<p><strong>Ciphertext-Commitment Equality Proof (<code>CiphertextCommitmentEqualityProofData</code>)</strong>:
+We require that the sender create a <em>new</em> Pedersen commitment to their known plaintext
+remaining balance. This equality proof then certifies that the homomorphically computed
+<code>new_balance_ciphertext</code> and the new Pedersen commitment encrypt/commit to the exact same
+value.</p>
+</li>
+</ul>
+</li>
+</ol>
+<p>These three proofs, when verified together, allow the on-chain program to securely process the
+confidential transfer.</p>
+</div></details><h2 id="structs" class="section-header">Structs<a href="#structs" class="anchor">§</a></h2><dl class="item-table"><dt><a class="struct" href="struct.TransferProofData.html" title="struct spl_token_confidential_transfer_proof_generation::transfer::TransferProofData">Transfer<wbr>Proof<wbr>Data</a></dt><dd>The proof data required for a confidential transfer instruction when the
+mint is not extended for fees</dd></dl><h2 id="functions" class="section-header">Functions<a href="#functions" class="anchor">§</a></h2><dl class="item-table"><dt><a class="fn" href="fn.transfer_split_proof_data.html" title="fn spl_token_confidential_transfer_proof_generation::transfer::transfer_split_proof_data">transfer_<wbr>split_<wbr>proof_<wbr>data</a></dt></dl></section></div></main></body></html>

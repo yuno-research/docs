@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Role"],"mod":["auth_service_client","auth_service_server"],"struct":["GenerateAuthChallengeRequest","GenerateAuthChallengeResponse","GenerateAuthTokensRequest","GenerateAuthTokensResponse","RefreshAccessTokenRequest","RefreshAccessTokenResponse","Token"]};

@@ -1,0 +1,1 @@
+searchState.loadedDescShard("solana_cluster_type", 0, "Returns the argument unchanged.\nGet the known genesis hash for this ClusterType\nCalls <code>U::from(self)</code>.")
