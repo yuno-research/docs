@@ -1,0 +1,10 @@
+[package]
+name = "docs"
+edition = "2024"
+
+[dependencies]
+solana_exec = { path = "../solana_exec" }
+solana_central = { path = "../solana_central" }
+copy_trading = { path = "../solana_copy_trading" }
+solana_car = { path = "../solana_car" }
+solana_tx_decoding = { path = "../solana_tx_decoding" }
